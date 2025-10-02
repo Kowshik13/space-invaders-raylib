@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
+#include <iostream>
 
 class Spaceship {
 	private:
@@ -54,6 +55,31 @@ class Game {
 
 };
 
+class Laser {
+	private:
+		Vector2 position;
+		int speed;	
+		bool active;
+	public:
+		Laser(Vector2 position, int speed){
+			this -> position = position;
+			this -> speed = speed;
+			active = true;
+		};
+		void Draw(){
+			if (active){
+				DrawRectangle(position.x, position.y, 4, 15, {243, 216, 63, 255});
+			}
+		};
+		void Update(){
+			position.y += speed;
+			if (position.y > GetScreenHeight() || position.y < 0){
+				active = false;
+			}
+		};
+		
+};
+
 int main ()
 {
 	int windowWidth = 750;
@@ -75,6 +101,9 @@ int main ()
 
 	// Initialise the instance of the game
 	Game game;
+
+	// Initialise the instance of laser 
+	Laser laser = Laser({100, 100}, -7);
 	
 	// game loop
 	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
@@ -91,6 +120,8 @@ int main ()
 		// draw our texture to the screen
 		game.Draw();
 		
+		laser.Draw();
+		laser.Update();
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
 		EndDrawing();
 	}
