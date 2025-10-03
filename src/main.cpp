@@ -1,59 +1,7 @@
 #include "raylib.h"
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
 #include <iostream>
-
-class Spaceship {
-	private:
-		Texture2D image;
-		Vector2 position;
-	public:
-		Spaceship (){
-			image = LoadTexture("spaceship.png");
-			position.x = (GetScreenWidth() - image.width) / 2;
-			position.y = (GetScreenHeight() - image.height);
-		}
-
-		~Spaceship(){
-			UnloadTexture(image);
-		}
-
-		void Draw(){
-			DrawTextureV(image, position, WHITE);
-		}
-
-		void MoveLeft(){
-			if (position.x > 0){
-				position.x -= 7;
-			}
-		}
-		
-		void MoveRight(){
-			if (position.x < GetScreenWidth() - image.width){
-				position.x += 7;
-			}
-		}
-};
-
-class Game {
-	private:
-		Spaceship spaceship;
-	public:
-		Game(){};
-		~Game(){};
-		void Draw(){
-			spaceship.Draw();
-		};
-		void Update(){};
-		void HandleInput(){
-			if (IsKeyDown(KEY_LEFT)){
-				spaceship.MoveLeft();
-			}
-			if (IsKeyDown(KEY_RIGHT)){
-				spaceship.MoveRight();
-			}
-		};
-
-};
+#include <vector>
 
 class Laser {
 	private:
@@ -77,7 +25,91 @@ class Laser {
 				active = false;
 			}
 		};
+		bool GetActive(){
+			return active;
+		};
+};
+
+class Spaceship {
+	private:
+		Texture2D image;
+		Vector2 position;
+		double lastFireTime;
+	public:
+		std::vector<Laser> lasers;
+		Spaceship (){
+			image = LoadTexture("spaceship.png");
+			position.x = (GetScreenWidth() - image.width) / 2;
+			position.y = (GetScreenHeight() - image.height);
+			lastFireTime = 0.0;
+		}
+
+		~Spaceship(){
+			UnloadTexture(image);
+		}
+
+		void Draw(){
+			DrawTextureV(image, position, WHITE);
+		}
+
+		void MoveLeft(){
+			if (position.x > 0){
+				position.x -= 7;
+			}
+		}
 		
+		void MoveRight(){
+			if (position.x < GetScreenWidth() - image.width){
+				position.x += 7;
+			}
+		}
+
+		void FireLaser(){
+			if (GetTime() - lastFireTime > 0.35){
+				Laser laser = Laser({position.x + image.width / 2 - 2, position.y - image.height}, -6);
+				lasers.push_back(laser);
+				lastFireTime = GetTime();
+			}
+		}
+};
+
+class Game {
+	private:
+		Spaceship spaceship;
+	public:
+		Game(){};
+		~Game(){};
+		void Draw(){
+			spaceship.Draw();
+			for (auto& laser: spaceship.lasers){
+				laser.Draw();
+			}
+		};
+		void Update(){
+			for (auto& laser: spaceship.lasers){
+				laser.Update();
+			}
+			DeleteInactiveLasers();
+			std::cout << spaceship.lasers.size() << std::endl;
+		};
+		void HandleInput(){
+			if (IsKeyDown(KEY_LEFT)){
+				spaceship.MoveLeft();
+			} else if (IsKeyDown(KEY_RIGHT)){
+				spaceship.MoveRight();
+			} else if (IsKeyDown(KEY_SPACE)){
+				spaceship.FireLaser();
+			}
+		};
+		void DeleteInactiveLasers(){
+			for (auto it = spaceship.lasers.begin(); it != spaceship.lasers.end();){
+				if (!it -> GetActive()){
+					it = spaceship.lasers.erase(it);
+				} else {
+					++ it;
+				}
+			}
+		}
 };
 
 int main ()
@@ -102,9 +134,6 @@ int main ()
 	// Initialise the instance of the game
 	Game game;
 
-	// Initialise the instance of laser 
-	Laser laser = Laser({100, 100}, -7);
-	
 	// game loop
 	while (!WindowShouldClose())		// run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
@@ -119,9 +148,10 @@ int main ()
 
 		// draw our texture to the screen
 		game.Draw();
-		
-		laser.Draw();
-		laser.Update();
+
+		// update the game
+		game.Update();
+
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
 		EndDrawing();
 	}
