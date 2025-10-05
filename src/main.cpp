@@ -3,6 +3,78 @@
 #include <iostream>
 #include <vector>
 
+class Block {
+	private: 
+		Vector2 position;
+	public:
+		Block(Vector2 position){
+			this -> position = position;
+		};
+		void Draw(){
+			DrawRectangle(position.x, position.y, 3, 3, {243, 216, 63, 255});
+		};
+
+};
+
+class Obstacle {
+	private:
+		Vector2 position;
+	public:
+		std::vector<Block> blocks;
+		static std::vector<std::vector<int>> grid;
+		// static std::vector<std::vector<int>> grid = {
+		// 		{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
+		// 		{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
+		// 		{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
+		// 		{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+		// 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		// 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		// 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		// 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		// 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		// 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		// 		{1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1},
+		// 		{1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+		// 		{1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}
+		// 	};
+		Obstacle (Vector2 position){
+			this -> position = position;
+			for (unsigned int row = 0; row < grid.size(); ++row){
+				for (unsigned int column = 0; column < grid[0].size(); ++column){
+					if (grid[row][column] == 1){
+						float pos_x = position.x + 3 * column;
+						float pos_y = position.y + 3 * row;
+						Block block = Block({pos_x, pos_y});
+						blocks.push_back(block);
+					}
+				}
+			}
+		};
+
+		void Draw(){
+			for (auto& block: blocks){
+				block.Draw();
+			}
+		};
+};
+
+std::vector<std::vector<int>> Obstacle::grid = {
+		{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
+		{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
+		{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
+		{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}
+	};
+
+
 class Laser {
 	private:
 		Vector2 position;
@@ -14,17 +86,20 @@ class Laser {
 			this -> speed = speed;
 			active = true;
 		};
+
 		void Draw(){
 			if (active){
 				DrawRectangle(position.x, position.y, 4, 15, {243, 216, 63, 255});
 			}
 		};
+
 		void Update(){
 			position.y += speed;
 			if (position.y > GetScreenHeight() || position.y < 0){
 				active = false;
 			}
 		};
+
 		bool GetActive(){
 			return active;
 		};
@@ -76,22 +151,41 @@ class Spaceship {
 class Game {
 	private:
 		Spaceship spaceship;
+		std::vector<Obstacle> obstacles;
+		std::vector<Obstacle> CreateObstacles(){
+			int obstacleWidth = Obstacle::grid[0].size() * 3;
+			float gap = (GetScreenWidth() - 4 * obstacleWidth) / 5;
+			for (int i = 0; i < 4; i++){
+				float offsetx = (i + 1) * gap + i * obstacleWidth;
+				obstacles.push_back(Obstacle({offsetx, float(GetScreenHeight() - 100)}));
+			};
+			return obstacles;
+		};
 	public:
-		Game(){};
+		Game(){
+			obstacles = CreateObstacles();
+		};
+
 		~Game(){};
+
 		void Draw(){
 			spaceship.Draw();
+			std::cout << Obstacle::grid[0].size();
 			for (auto& laser: spaceship.lasers){
 				laser.Draw();
 			}
+			for (auto& obstacle: obstacles){
+				obstacle.Draw();
+			}
 		};
+
 		void Update(){
 			for (auto& laser: spaceship.lasers){
 				laser.Update();
 			}
 			DeleteInactiveLasers();
-			std::cout << spaceship.lasers.size() << std::endl;
 		};
+
 		void HandleInput(){
 			if (IsKeyDown(KEY_LEFT)){
 				spaceship.MoveLeft();
@@ -101,6 +195,7 @@ class Game {
 				spaceship.FireLaser();
 			}
 		};
+
 		void DeleteInactiveLasers(){
 			for (auto it = spaceship.lasers.begin(); it != spaceship.lasers.end();){
 				if (!it -> GetActive()){
@@ -110,6 +205,7 @@ class Game {
 				}
 			}
 		}
+
 };
 
 int main ()
