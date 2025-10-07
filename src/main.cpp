@@ -3,6 +3,46 @@
 #include <iostream>
 #include <vector>
 
+// Texture2D alienImages[3] = {
+// 	LoadTexture("alien_1.png")
+// 	, LoadTexture("alien_2.png")
+// 	, LoadTexture("alien_3.png")
+// };
+
+class Alien {
+	private:
+		Texture2D image;
+		int number;
+		int type;
+		Vector2 position;
+	public:
+		Alien (int type, Vector2 position){
+			this -> type = type;
+			this -> position = position;
+			switch (type){
+				case 1: 
+					image = LoadTexture("alien_1.png");
+					break;
+				case 2: 
+					image = LoadTexture("alien_2.png");
+					break;
+				case 3: 
+					image = LoadTexture("alien_3.png");
+					break;
+				default: 
+					image = LoadTexture("alien_1.png");
+					break;
+			}
+		};
+		int GetType(){
+			return type;
+		};
+		void Update (){};
+		void Draw (){
+			DrawTextureV(image, position, WHITE);
+		};
+};
+
 class Block {
 	private: 
 		Vector2 position;
@@ -161,21 +201,44 @@ class Game {
 			};
 			return obstacles;
 		};
+		std::vector<Alien> aliens;
+		std::vector<Alien> CreateAliens(){
+			std::vector<Alien> aliensVector;
+			for (int row = 0; row < 5; row++){
+				int alienType;
+				if (row == 0){
+					alienType = 1;
+				} else if (row == 1 || row == 2){
+					alienType = 2;
+				} else {
+					alienType = 3;
+				};
+				for (int column = 0; column < 11; column++){
+					float x = 75 + column * 55;
+					float y = 110 + row * 55;
+					aliensVector.push_back(Alien(alienType, {x, y}));
+				};
+			};
+			return aliensVector;
+		};
 	public:
 		Game(){
 			obstacles = CreateObstacles();
+			aliens = CreateAliens();
 		};
 
 		~Game(){};
 
 		void Draw(){
 			spaceship.Draw();
-			std::cout << Obstacle::grid[0].size();
 			for (auto& laser: spaceship.lasers){
 				laser.Draw();
 			}
 			for (auto& obstacle: obstacles){
 				obstacle.Draw();
+			}
+			for (auto& alien: aliens){
+				alien.Draw();
 			}
 		};
 
@@ -220,6 +283,8 @@ int main ()
 
 	// Create the window and OpenGL context
 	InitWindow(windowWidth, windowHeight, "Space Invaders!!!");
+
+	Texture2D oneAlien = LoadTexture("alien_1.png");
 
 	// Specify target FPS - if undefined, the computer will run the game as fast as it can so the speed will depend on the computer
 	SetTargetFPS(60);
