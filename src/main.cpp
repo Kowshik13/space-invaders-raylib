@@ -38,7 +38,19 @@ class Alien {
 		int GetType(){
 			return type;
 		};
-		void Update (){};
+		float GetPositionX(){
+			return position.x;
+		};
+		float GetPositionY(){
+			return position.y;
+		};
+		void SetPosition(Vector2 newPosition){
+			position = newPosition;
+		}
+		void Update (int x_direction, int y_direction){
+			position.x += x_direction;
+			position.y += y_direction;
+		};
 		void Draw (){
 			DrawTextureV(alienImages[type - 1], position, WHITE);
 		};
@@ -229,10 +241,44 @@ class Game {
 			};
 			return aliensVector;
 		};
+		void MoveAliens(){
+			for (auto& alien : aliens){
+				if (alien.GetPositionX() + alien.alienImages[alien.GetType() - 1].width > GetScreenWidth()){
+					aliensDirection = -1;
+					MoveDownAliens(4);
+				}
+				if (alien.GetPositionX() < 0){
+					aliensDirection = 1;
+					MoveDownAliens(4);
+				}
+				alien.Update(aliensDirection, 0);	
+			}
+		};
+		void MoveDownAliens(int distance){
+			for (auto& alien : aliens){
+				alien.Update(0, distance);
+			}
+		};
+		int aliensDirection;
+		std::vector<Laser> alienLasers;
+		constexpr static float alienLaserShootInterval = 0.55;
+		float timeLastAlienFired;
+		void AlienShootLaser(){
+			double currentTime = GetTime();
+			if (currentTime - timeLastAlienFired > alienLaserShootInterval && !aliens.empty()){
+				int randomIndex = GetRandomValue(0, aliens.size() - 1);
+				Alien& alien = aliens[randomIndex];
+				alienLasers.push_back(Laser({alien.GetPositionX() + alien.alienImages[alien.GetType() - 1].width / 2, 
+					alien.GetPositionY() + alien.alienImages[alien.GetType() - 1].height}, 5));
+				timeLastAlienFired = GetTime();
+			}
+		};
 	public:
 		Game(){
 			obstacles = CreateObstacles();
 			aliens = CreateAliens();
+			aliensDirection = 1;
+			timeLastAlienFired = 0.0;
 		};
 
 		~Game(){
@@ -250,6 +296,9 @@ class Game {
 			for (auto& alien: aliens){
 				alien.Draw();
 			}
+			for (auto& alienLaser: alienLasers){
+				alienLaser.Draw();
+			}
 		};
 
 		void Update(){
@@ -257,6 +306,11 @@ class Game {
 				laser.Update();
 			}
 			DeleteInactiveLasers();
+			MoveAliens();
+			AlienShootLaser();
+			for (auto& alienLaser: alienLasers){
+				alienLaser.Update();
+			}
 		};
 
 		void HandleInput(){
@@ -273,6 +327,13 @@ class Game {
 			for (auto it = spaceship.lasers.begin(); it != spaceship.lasers.end();){
 				if (!it -> GetActive()){
 					it = spaceship.lasers.erase(it);
+				} else {
+					++ it;
+				}
+			}
+			for (auto it = alienLasers.begin(); it != alienLasers.end();){
+				if (!it -> GetActive()){
+					it = alienLasers.erase(it);
 				} else {
 					++ it;
 				}
