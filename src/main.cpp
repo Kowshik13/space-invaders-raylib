@@ -16,21 +16,22 @@ class Alien {
 		int type;
 		Vector2 position;
 	public:
+		static Texture2D alienImages[3];
 		Alien (int type, Vector2 position){
 			this -> type = type;
 			this -> position = position;
 			switch (type){
 				case 1: 
-					image = LoadTexture("alien_1.png");
+					alienImages[0] = LoadTexture("alien_1.png");
 					break;
 				case 2: 
-					image = LoadTexture("alien_2.png");
+					alienImages[1] = LoadTexture("alien_2.png");
 					break;
 				case 3: 
-					image = LoadTexture("alien_3.png");
+					alienImages[2] = LoadTexture("alien_3.png");
 					break;
 				default: 
-					image = LoadTexture("alien_1.png");
+					alienImages[0] = LoadTexture("alien_1.png");
 					break;
 			}
 		};
@@ -39,9 +40,16 @@ class Alien {
 		};
 		void Update (){};
 		void Draw (){
-			DrawTextureV(image, position, WHITE);
+			DrawTextureV(alienImages[type - 1], position, WHITE);
+		};
+		static void UnloadImages(){
+			std::cout << "unloaded images" << std::endl;
+			for (int i = 0; i < 4; i++){
+				UnloadTexture(alienImages[i]);
+			}
 		};
 };
+Texture2D Alien::alienImages[3] = {};
 
 class Block {
 	private: 
@@ -227,7 +235,9 @@ class Game {
 			aliens = CreateAliens();
 		};
 
-		~Game(){};
+		~Game(){
+			Alien::UnloadImages();
+		};
 
 		void Draw(){
 			spaceship.Draw();
