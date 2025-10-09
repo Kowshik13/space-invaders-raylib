@@ -17,6 +17,9 @@ class Alien {
 		Vector2 position;
 	public:
 		static Texture2D alienImages[3];
+		Rectangle getRect(){
+			return {position.x, position.y, float(alienImages[type - 1].width), float(alienImages[type - 1].height)};
+		};
 		Alien (int type, Vector2 position){
 			this -> type = type;
 			this -> position = position;
@@ -67,6 +70,9 @@ class Block {
 	private: 
 		Vector2 position;
 	public:
+		Rectangle getRect(){
+			return {position.x, position.y, 3, 3};
+		};
 		Block(Vector2 position){
 			this -> position = position;
 		};
@@ -141,6 +147,9 @@ class Laser {
 		int speed;	
 		bool active;
 	public:
+		Rectangle getRect(){
+			return {position.x, position.y, 4, 15};
+		};
 		Laser(Vector2 position, int speed){
 			this -> position = position;
 			this -> speed = speed;
@@ -163,6 +172,10 @@ class Laser {
 		bool GetActive(){
 			return active;
 		};
+
+		void SetActive(bool activeStatus){
+			active = activeStatus;
+		};
 };
 
 class Spaceship {
@@ -171,6 +184,9 @@ class Spaceship {
 		Vector2 position;
 		double lastFireTime;
 	public:
+		Rectangle getRect(){
+			return {position.x, position.y, float(image.width), float(image.height)};
+		};
 		std::vector<Laser> lasers;
 		Spaceship (){
 			image = LoadTexture("spaceship.png");
@@ -273,6 +289,75 @@ class Game {
 				timeLastAlienFired = GetTime();
 			}
 		};
+		void CheckForCollisions(){
+			// spaceship lasers
+			for (auto& laser: spaceship.lasers){
+				auto it = aliens.begin();
+				while (it != aliens.end()){
+					if (CheckCollisionRecs(it -> getRect(), laser.getRect())){
+						it = aliens.erase(it);
+						laser.SetActive(false);
+					} else {
+						++it;
+					}
+				}
+
+				for (auto& obstacle : obstacles){
+					auto itobs = obstacle.blocks.begin();
+					while (itobs != obstacle.blocks.end()){
+						if (CheckCollisionRecs(itobs -> getRect(), laser.getRect())){
+							itobs = obstacle.blocks.erase(itobs);
+							laser.SetActive(false);
+						} else {
+							++itobs;
+						}
+					}
+				}
+
+			}
+
+			// Alien lasers
+			for (auto& laser : alienLasers){
+				if (CheckCollisionRecs(spaceship.getRect(), laser.getRect())){
+					laser.SetActive(false);
+					std::cout << "space hit !!! " << std::endl;
+
+				}
+				for (auto& obstacle : obstacles){
+					auto itobs = obstacle.blocks.begin();
+					while (itobs != obstacle.blocks.end()){
+						if (CheckCollisionRecs(itobs -> getRect(), laser.getRect())){
+							itobs = obstacle.blocks.erase(itobs);
+							laser.SetActive(false);
+						} else {
+							++itobs;
+						}
+					}
+				}
+
+			}
+
+			// alien collision with obstacle
+			for (auto& alien : aliens){
+				for (auto& obstacle : obstacles){
+					auto italobs = obstacle.blocks.begin();
+					while (italobs != obstacle.blocks.end()){
+						if (CheckCollisionRecs(italobs -> getRect(), alien.getRect())){
+							italobs = obstacle.blocks.erase(italobs);
+						} else {
+							++italobs;
+						}
+					}
+				}
+
+				if (CheckCollisionRecs(alien.getRect(), spaceship.getRect())){
+					std::cout << "spaceship hittt nooooooo" << std::endl;
+				}
+			}
+
+			// alien collision with spaceship
+
+		};
 	public:
 		Game(){
 			obstacles = CreateObstacles();
@@ -311,6 +396,7 @@ class Game {
 			for (auto& alienLaser: alienLasers){
 				alienLaser.Update();
 			}
+			CheckForCollisions();
 		};
 
 		void HandleInput(){
