@@ -222,6 +222,14 @@ class Spaceship {
 				lastFireTime = GetTime();
 			}
 		}
+
+		void Reset(){
+			// image = LoadTexture("spaceship.png");
+			position.x = (GetScreenWidth() - image.width) / 2;
+			position.y = (GetScreenHeight() - image.height);
+			// lastFireTime = 0.0;
+			lasers.clear();
+		};
 };
 
 class Game {
@@ -320,8 +328,11 @@ class Game {
 			for (auto& laser : alienLasers){
 				if (CheckCollisionRecs(spaceship.getRect(), laser.getRect())){
 					laser.SetActive(false);
-					std::cout << "space hit !!! " << std::endl;
-
+					lives -= 1;
+					std::cout << lives << std::endl;
+					if (lives == 0){
+						GameOver();
+					}
 				}
 				for (auto& obstacle : obstacles){
 					auto itobs = obstacle.blocks.begin();
@@ -352,11 +363,30 @@ class Game {
 
 				if (CheckCollisionRecs(alien.getRect(), spaceship.getRect())){
 					std::cout << "spaceship hittt nooooooo" << std::endl;
+					lives = 0;
+					GameOver();
 				}
 			}
-
-			// alien collision with spaceship
-
+		};
+		int lives = 3;
+		void GameOver(){
+			std::cout << "deaddd" << std::endl;
+			run = false;
+		};
+		void Reset(){
+			std::cout << "resetting!!" << std::endl;
+			spaceship.Reset();
+			aliens.clear();
+			alienLasers.clear();
+			obstacles.clear();
+		};
+		void InitGame(){
+			obstacles = CreateObstacles();
+			aliens = CreateAliens();
+			aliensDirection = 1;
+			timeLastAlienFired = 0.0;
+			run = true;
+			lives = 3;
 		};
 	public:
 		Game(){
@@ -387,25 +417,34 @@ class Game {
 		};
 
 		void Update(){
-			for (auto& laser: spaceship.lasers){
-				laser.Update();
+			if (run){
+				for (auto& laser: spaceship.lasers){
+					laser.Update();
+				}
+				DeleteInactiveLasers();
+				MoveAliens();
+				AlienShootLaser();
+				for (auto& alienLaser: alienLasers){
+					alienLaser.Update();
+				}
+				CheckForCollisions();
+			} else {
+				if (IsKeyDown(KEY_ENTER)){
+					Reset();
+					InitGame();
+				}
 			}
-			DeleteInactiveLasers();
-			MoveAliens();
-			AlienShootLaser();
-			for (auto& alienLaser: alienLasers){
-				alienLaser.Update();
-			}
-			CheckForCollisions();
 		};
 
 		void HandleInput(){
-			if (IsKeyDown(KEY_LEFT)){
-				spaceship.MoveLeft();
-			} else if (IsKeyDown(KEY_RIGHT)){
-				spaceship.MoveRight();
-			} else if (IsKeyDown(KEY_SPACE)){
-				spaceship.FireLaser();
+			if (run){
+				if (IsKeyDown(KEY_LEFT)){
+					spaceship.MoveLeft();
+				} else if (IsKeyDown(KEY_RIGHT)){
+					spaceship.MoveRight();
+				} else if (IsKeyDown(KEY_SPACE)){
+					spaceship.FireLaser();
+				}
 			}
 		};
 
@@ -425,6 +464,8 @@ class Game {
 				}
 			}
 		}
+
+		bool run = true;
 
 };
 
