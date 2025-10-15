@@ -3,12 +3,6 @@
 #include <iostream>
 #include <vector>
 
-// Texture2D alienImages[3] = {
-// 	LoadTexture("alien_1.png")
-// 	, LoadTexture("alien_2.png")
-// 	, LoadTexture("alien_3.png")
-// };
-
 class Alien {
 	private:
 		Texture2D image;
@@ -58,7 +52,7 @@ class Alien {
 			DrawTextureV(alienImages[type - 1], position, WHITE);
 		};
 		static void UnloadImages(){
-			std::cout << "unloaded images" << std::endl;
+			std::cout << "Unloaded alien images." << std::endl;
 			for (int i = 0; i < 4; i++){
 				UnloadTexture(alienImages[i]);
 			}
@@ -79,7 +73,6 @@ class Block {
 		void Draw(){
 			DrawRectangle(position.x, position.y, 3, 3, {243, 216, 63, 255});
 		};
-
 };
 
 class Obstacle {
@@ -88,21 +81,6 @@ class Obstacle {
 	public:
 		std::vector<Block> blocks;
 		static std::vector<std::vector<int>> grid;
-		// static std::vector<std::vector<int>> grid = {
-		// 		{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-		// 		{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-		// 		{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
-		// 		{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-		// 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		// 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		// 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		// 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		// 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		// 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		// 		{1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1},
-		// 		{1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
-		// 		{1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}
-		// 	};
 		Obstacle (Vector2 position){
 			this -> position = position;
 			for (unsigned int row = 0; row < grid.size(); ++row){
@@ -139,7 +117,6 @@ std::vector<std::vector<int>> Obstacle::grid = {
 		{1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
 		{1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1}
 	};
-
 
 class Laser {
 	private:
@@ -224,10 +201,8 @@ class Spaceship {
 		}
 
 		void Reset(){
-			// image = LoadTexture("spaceship.png");
 			position.x = (GetScreenWidth() - image.width) / 2;
 			position.y = (GetScreenHeight() - image.height);
-			// lastFireTime = 0.0;
 			lasers.clear();
 		};
 };
@@ -285,7 +260,8 @@ class Game {
 		};
 		int aliensDirection;
 		std::vector<Laser> alienLasers;
-		constexpr static float alienLaserShootInterval = 0.55;
+		// constexpr static float alienLaserShootInterval = 0.55;
+		float alienLaserShootInterval = 0.55;
 		float timeLastAlienFired;
 		void AlienShootLaser(){
 			double currentTime = GetTime();
@@ -362,7 +338,7 @@ class Game {
 				}
 
 				if (CheckCollisionRecs(alien.getRect(), spaceship.getRect())){
-					std::cout << "spaceship hittt nooooooo" << std::endl;
+					std::cout << "Spaceship is hit! Nooooooo!" << std::endl;
 					lives = 0;
 					GameOver();
 				}
@@ -370,7 +346,7 @@ class Game {
 		};
 		int lives = 3;
 		void GameOver(){
-			std::cout << "deaddd" << std::endl;
+			std::cout << "deeeaaaddd :(" << std::endl;
 			run = false;
 		};
 		void Reset(){
@@ -475,19 +451,13 @@ class Game {
 
 int main ()
 {
-	int offset = 50;
-	int windowWidth = 750;
-	int windowHeight = 700;
+	int windowWidth = 800;
+	int windowHeight = 800;
 
 	Color grey = {29, 29, 27, 255};
 
-	// Tell the window to use vsync and work on high DPI displays
-	// SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
-
 	// Create the window and OpenGL context
-	InitWindow(windowWidth + offset, windowHeight + 2 * offset, "Space Invaders!!!");
-
-	Texture2D oneAlien = LoadTexture("alien_1.png");
+	InitWindow(windowWidth, windowHeight, "!!! Space Invaders !!!");
 
 	// Specify target FPS - if undefined, the computer will run the game as fast as it can so the speed will depend on the computer
 	SetTargetFPS(60);
