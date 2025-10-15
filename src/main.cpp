@@ -400,6 +400,10 @@ class Game {
 			Alien::UnloadImages();
 		};
 
+		int GetLives(){
+			return lives;
+		};
+
 		void Draw(){
 			spaceship.Draw();
 			for (auto& laser: spaceship.lasers){
@@ -471,6 +475,7 @@ class Game {
 
 int main ()
 {
+	int offset = 50;
 	int windowWidth = 750;
 	int windowHeight = 700;
 
@@ -480,7 +485,7 @@ int main ()
 	// SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
 	// Create the window and OpenGL context
-	InitWindow(windowWidth, windowHeight, "Space Invaders!!!");
+	InitWindow(windowWidth + offset, windowHeight + 2 * offset, "Space Invaders!!!");
 
 	Texture2D oneAlien = LoadTexture("alien_1.png");
 
@@ -507,6 +512,14 @@ int main ()
 
 		// draw our texture to the screen
 		game.Draw();
+
+		if (!game.run){
+			DrawText("Game over. Press ENTER to restart.", 20, 10, 20, YELLOW);
+		};
+
+		for (int i = 0; i < game.GetLives(); i++){
+			DrawTextureV(LoadTexture("spaceship.png"), {float(20 + i * 50), 10}, WHITE);
+		}
 
 		// update the game
 		game.Update();
