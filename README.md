@@ -7,7 +7,7 @@ Classic space invaders game built on C++ using the Raylib library.
 - You have three lives. 
 - Press Enter to restart. 
 
-I followed closely the [tutorial video](#https://youtu.be/TGo3Oxdpr5o?si=xQBBFQfa_mX7JzX-) by [Programming With Nick](#https://www.youtube.com/@programmingwithnick).
+I followed closely the [tutorial video](https://youtu.be/TGo3Oxdpr5o?si=xQBBFQfa_mX7JzX-) by [Programming With Nick](#https://www.youtube.com/@programmingwithnick).
 
 ## Technologies
 * **Raylib** for game loop

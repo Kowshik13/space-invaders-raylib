@@ -41,9 +41,6 @@ class Alien {
 		float GetPositionY(){
 			return position.y;
 		};
-		void SetPosition(Vector2 newPosition){
-			position = newPosition;
-		}
 		void Update (int x_direction, int y_direction){
 			position.x += x_direction;
 			position.y += y_direction;
@@ -83,8 +80,8 @@ class Obstacle {
 		static std::vector<std::vector<int>> grid;
 		Obstacle (Vector2 position){
 			this -> position = position;
-			for (unsigned int row = 0; row < grid.size(); ++row){
-				for (unsigned int column = 0; column < grid[0].size(); ++column){
+			for (int row = 0; row < grid.size(); ++row){
+				for (int column = 0; column < grid[0].size(); ++column){
 					if (grid[row][column] == 1){
 						float pos_x = position.x + 3 * column;
 						float pos_y = position.y + 3 * row;
