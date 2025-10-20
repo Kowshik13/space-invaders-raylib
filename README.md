@@ -7,14 +7,14 @@ Classic space invaders game built on C++ using the Raylib library.
 - You have three lives. 
 - Press Enter to restart. 
 
-I followed closely the [tutorial video](https://youtu.be/TGo3Oxdpr5o?si=xQBBFQfa_mX7JzX-) by [Programming With Nick](#https://www.youtube.com/@programmingwithnick).
+I followed closely the [tutorial video](https://youtu.be/TGo3Oxdpr5o?si=xQBBFQfa_mX7JzX-) by [Programming With Nick](https://www.youtube.com/@programmingwithnick).
 
 ## Technologies
 * **Raylib** for game loop
 
 ## How to set it up for developement
 
-The logic of the game is all coded in one file `src/main.cpp`. Raylib is available on most modern OS including Windows, MacOS, and Linux. You can find the setup instruction for each in the [Raylib website](#https://www.raylib.com/). For MacOS (not sure about for others), it directs me to the [`Raylib-Quickstart` GitHub repository](#https://github.com/raylib-extras/raylib-quickstart). For the VS code users, there is a special instruction. 
+The logic of the game is all coded in one file `src/main.cpp`. Raylib is available on most modern OS including Windows, MacOS, and Linux. You can find the setup instruction for each in the [Raylib website](https://www.raylib.com/). For MacOS (not sure about for others), it directs me to the [`Raylib-Quickstart` GitHub repository](https://github.com/raylib-extras/raylib-quickstart). For the VS code users, there is a special instruction. 
 It might be worth pointing out that even following the instruction, I could not set it up as instructued. It seemed to me that there is an issue finding the Raylib library by the VS Code. So I followed the instruction written for the `MacOS Users`.  
 
 ## How to run the game
