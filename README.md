@@ -19,10 +19,10 @@ It might be worth pointing out that even following the instruction, I could not 
 
 ## How to run the game
 
-This GitHub repo alreay has the executable compiled so the first two steps will not be necessary unless you are developping and making changes in the source file (`src/main.cpp`).
+This is an instruction on how to build the game and execute it. Note that the `make` in Step 2 sometimes does not seem to run on Windows machine. I am unsure why this is.
 
 1. In the terminal, navigate to the project folder. 
-2. Run `make` compile the project. This create an executable. 
+2. Run `make` to compile the project. This create an executable. 
 3. Navigate to `bin/Debug`. This is where the executable is stored in.
 4. Run `./space-invaders-raylib`. 
 
@@ -32,6 +32,7 @@ This GitHub repo alreay has the executable compiled so the first two steps will 
 - Set up more levels so that the aliens move increasingly faster as we progress.
 - Set up scores (e.g., gain scores when killing aliens).
 - Set up leaderboards. 
+- Display game beat message.
 
 ## Resources
 * Raylib - https://www.raylib.com/
