@@ -1,0 +1,3 @@
+750,Easy,Rookie
+1250,Normal,Commander
+1800,Hard,ArcadeMaster

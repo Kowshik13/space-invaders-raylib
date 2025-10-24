@@ -12,19 +12,42 @@ I followed closely the [tutorial video](https://youtu.be/TGo3Oxdpr5o?si=xQBBFQfa
 ## Technologies
 * **Raylib** for game loop
 
-## How to set it up for developement
+## Building and running
 
-The logic of the game is all coded in one file `src/main.cpp`. Raylib is available on most modern OS including Windows, MacOS, and Linux. You can find the setup instruction for each in the [Raylib website](https://www.raylib.com/). For MacOS (not sure about for others), it directs me to the [`Raylib-Quickstart` GitHub repository](https://github.com/raylib-extras/raylib-quickstart). For the VS code users, there is a special instruction. 
-It might be worth pointing out that even following the instruction, I could not set it up as instructued. It seemed to me that there is an issue finding the Raylib library by the VS Code. So I followed the instruction written for the `MacOS Users`.  
+The repository bundles a [Premake](https://premake.github.io/) setup that will download Raylib and generate the native project files for you. The process differs slightly between Windows and macOS – follow the platform specific guide below.
 
-## How to run the game
+### Windows
 
-This is an instruction on how to build the game and execute it. Note that the `make` in Step 2 sometimes does not seem to run on Windows machine. I am unsure why this is.
+You can use either Visual Studio or MinGW-w64. Both paths will build the game into `bin/Debug/space-invaders-raylib.exe` (or the `Release` folder if you choose a release configuration).
 
-1. In the terminal, navigate to the project folder. 
-2. Run `make` to compile the project. This create an executable. 
-3. Navigate to `bin/Debug`. This is where the executable is stored in.
-4. Run `./space-invaders-raylib`. 
+#### Option A – Visual Studio 2022 (recommended)
+
+1. Install **Visual Studio 2022** with the *Desktop development with C++* workload.
+2. Open a *Developer PowerShell* or *Developer Command Prompt for VS 2022* and `cd` into the project directory.
+3. Run `build-VisualStudio2022.bat`. This calls Premake to generate a `space-invaders-raylib.sln` file in the repository root.
+4. Open the generated solution in Visual Studio, choose the `Debug` (or `Release`) configuration you want, and build the solution (Build ▸ Build Solution).
+5. Press *Local Windows Debugger* (or `Ctrl+F5`) to launch the game, or run the built executable from `bin/Debug/space-invaders-raylib.exe`.
+
+#### Option B – MinGW-w64 (MSYS2)
+
+1. Install [MSYS2](https://www.msys2.org/) and open the *MSYS2 MinGW 64-bit* shell.
+2. Install the toolchain and make by running `pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-make`.
+3. Inside that same shell, `cd` into the project directory and execute `build-MinGW-W64.bat`. The script downloads Raylib (if needed) and generates GNU Makefiles.
+4. Still in the MinGW shell, build the project with `mingw32-make config=debug_x64` (or `release_x64`).
+5. Launch the game with `bin/Debug/space-invaders-raylib.exe` (or the release variant).
+
+> **Tip:** If Windows blocks the `.bat` scripts, right-click the file ▸ *Properties* ▸ *Unblock* before running it.
+
+### macOS
+
+1. Install the Xcode Command Line Tools (`xcode-select --install`).
+2. Ensure you have a recent version of make (macOS ships one by default) and optionally install Homebrew's `make` if you prefer (`brew install make`).
+3. Grant execute permission to the bundled Premake binary once: `chmod +x build/premake5.osx`.
+4. Generate the GNU Make project files by running `./build/premake5.osx gmake2` from the repository root (the command will download Raylib sources on the first run).
+5. Build the game with `make config=debug_x64` (or `config=release_x64`) from the project root.
+6. Run the app with `./bin/Debug/space-invaders-raylib` (or the release executable).
+
+If you want to build a `.app` bundle later, you can open the generated Xcode project under `build/build_files` or integrate with your own toolchain.
 
 ## Future improvements
 
